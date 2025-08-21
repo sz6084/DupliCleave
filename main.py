@@ -11,8 +11,6 @@ class App:
         self.window.geometry("500x340")
         window.minsize(291,62)
 
-        self.treeView = ttk.Treeview() # create columns
-
         frm = ttk.Frame(window, padding=10)
         frm.grid()
         window.columnconfigure(0, weight=1)
@@ -22,10 +20,8 @@ class App:
         ttk.Button(frm, text="Quit", command=frm.quit).grid(column=2, row=1)
 
     def getDirectory(self):
-        path = filedialog.askdirectory(initialdir="~", title="Select a folder") # add mustexist
-        print(path)
+        path = filedialog.askdirectory(initialdir="~", title="Select a folder")
         if path:
-            self.treeView.insert(tk.END, path)
             return path
 
 if __name__ == "__main__":
