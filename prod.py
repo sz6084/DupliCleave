@@ -1,8 +1,12 @@
 from tkinter import ttk
 from tkinter import filedialog
 
+import tkfilebrowser
 import tkinter as tk
 import os
+import pathlib
+from pathlib import Path
+from filecmp import cmp
 
 class App:
     def __init__(self, window):
@@ -20,36 +24,30 @@ class App:
         ttk.Label(frm, text="Select folders to scan:").grid(column=0, row=0)
         self.selected_dir = ttk.Label(frm, text="No folder selected")
         self.selected_dir.grid(column=0,row=1)
-        ttk.Button(frm, text="Browse", command=self.getDirectory).grid(column=1, row=1)
+        ttk.Button(frm, text="Browse", command=self.get_directories).grid(column=1, row=1)
         ttk.Button(frm, text="Quit", command=frm.quit).grid(column=2, row=1)
 
-    def getDirectory(self):
-        self.path = filedialog.askdirectory(initialdir="~", title="Select a folder") # ~add mustexist~
-        path = self.path
-        if path:
-            self.selected_dir.config(text=path)
-            self.files=next(os.walk(path, topdown=True, followlinks=True))
-            #for root, dirnames, filenames in os.walk(path):
-            #    print(root)
-            #    print(dirnames)
-            #    print(filenames)
-            #    print('---')
-            #print(self.files)
-            self.checkDupes()
-            #self.treeView.insert(tk.END, path)
-            #return self.path
-    #@staticmethod
+    def get_directories(self):
+        self.dirs = list(tkfilebrowser.askopendirnames())
+        if not self.dirs:
+            self.dirs = []
+            return "N/A"
+        self.checkDupes()
+        #print(list(self.dirs))
+
     def checkDupes(self):
         path = self.path
         files = self.files
-        for i in range(len(self.files[1])-1):
-            if files[i] in files[i+1:]:
+        print(sorted(os.listdir(path)))
+        for i in range(len(files[1])-1):
+            if Path(path).rglob(files[1][i]):
                 print("directory name match found!")
-                print(files[i])
-        for i in range(len(self.files[2])-1):
-            if files[i] in files[i+1:]:
+                print(i)
+                #print(files[1][i])
+        for i in range(len(files[2])-1):
+            if Path(path).rglob(files[1][i]):
                 print("filename match found!")
-                print(files[i])
+                #print(files[2][i])
 
 if __name__ == "__main__":
     window = tk.Tk()
